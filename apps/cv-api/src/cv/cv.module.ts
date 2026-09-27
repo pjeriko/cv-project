@@ -4,8 +4,15 @@ import { VariantModule } from './variant/variant.module.js';
 import { ProfileModule } from './profile/profile.module.js';
 import { SkillModule } from './skill/skill.module.js';
 import { ExperienceModule } from './experience/experience.module.js';
+import { EducationModule } from './education/education.module.js';
 
 @Module({
-  imports: [VariantModule, ProfileModule, SkillModule, ExperienceModule],
+  imports: [
+    VariantModule,
+    ProfileModule,
+    SkillModule,
+    ExperienceModule,
+    EducationModule,
+  ],
 })
 export class CvModule {}

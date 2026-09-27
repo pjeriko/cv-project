@@ -5,6 +5,7 @@ import { ProfileModule } from './profile/profile.module.js';
 import { SkillModule } from './skill/skill.module.js';
 import { ExperienceModule } from './experience/experience.module.js';
 import { EducationModule } from './education/education.module.js';
+import { ProjectModule } from './project/project.module.js';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { EducationModule } from './education/education.module.js';
     SkillModule,
     ExperienceModule,
     EducationModule,
+    ProjectModule,
   ],
 })
 export class CvModule {}

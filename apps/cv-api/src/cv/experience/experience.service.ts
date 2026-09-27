@@ -60,7 +60,12 @@ export class ExperienceService {
         data: {
           ...experienceData,
           startDate: startDate !== undefined ? new Date(startDate) : undefined,
-          endDate: endDate !== undefined ? new Date(endDate) : undefined,
+          endDate:
+            endDate === undefined
+              ? undefined
+              : endDate === null
+                ? null
+                : new Date(endDate),
         },
         include: { variants: { include: { variant: true } } },
       });

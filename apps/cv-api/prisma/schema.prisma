@@ -150,3 +150,16 @@ model ProjectVariant {
 
   @@id([projectId, variantId])
 }
+
+// ============================================================
+// USER
+// ============================================================
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String   // hash bcrypt, jamais en clair
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

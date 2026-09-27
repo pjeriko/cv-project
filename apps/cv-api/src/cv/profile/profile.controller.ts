@@ -1,7 +1,7 @@
-// src/cv/profile/profile.controller.ts (fichier complet mis à jour)
-import { Controller, Get, Patch, Body } from '@nestjs/common';
+import { Controller, Get, Patch, Body, UseGuards } from '@nestjs/common';
 import { ProfileService } from './profile.service.js';
 import { UpdateProfileDto } from './dto/update-profile.dto.js';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard.js';
 
 @Controller('profile')
 export class ProfileController {
@@ -13,6 +13,7 @@ export class ProfileController {
   }
 
   @Patch()
+  @UseGuards(JwtAuthGuard)
   update(@Body() dto: UpdateProfileDto) {
     return this.profileService.update(dto);
   }

@@ -8,10 +8,12 @@ import {
   Param,
   ParseIntPipe,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { VariantService } from './variant.service.js';
 import { CreateVariantDto } from './dto/create-variant.dto.js';
 import { UpdateVariantDto } from './dto/update-variant.dto.js';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard.js';
 
 @Controller('variants')
 export class VariantController {
@@ -28,17 +30,20 @@ export class VariantController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   create(@Body() dto: CreateVariantDto) {
     return this.variantService.create(dto);
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateVariantDto) {
     return this.variantService.update(id, dto);
   }
 
   @Delete(':id')
   @HttpCode(204)
+  @UseGuards(JwtAuthGuard)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.variantService.remove(id);
   }

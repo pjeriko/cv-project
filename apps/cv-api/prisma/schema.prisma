@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// ============================================================
+// PROFILE — une seule ligne, pas de CRUD multiple
+// ============================================================
+model Profile {
+  id        Int      @id @default(autoincrement())
+  fullName  String
+  title     String
+  summary   String   @db.Text
+  email     String
+  phone     String?
+  location  String?
+  linkedin  String?
+  github    String?
+  website   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================================
+// VARIANT — "profils de poste" (dev-web, graphisme, fullstack...)
+// ============================================================
+model Variant {
+  id      Int    @id @default(autoincrement())
+  slug    String @unique
+  label   String
+  summary String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  experiences ExperienceVariant[]
+  skills      SkillVariant[]
+  educations  EducationVariant[]
+  projects    ProjectVariant[]
+}
+
+// ============================================================
+// EXPERIENCE
+// ============================================================
+model Experience {
+  id          Int       @id @default(autoincrement())
+  position    String
+  company     String
+  startDate   DateTime
+  endDate     DateTime?
+  description String    @db.Text // Markdown
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  variants ExperienceVariant[]
+}
+
+model ExperienceVariant {
+  experienceId Int
+  variantId    Int
+
+  experience Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+  variant    Variant    @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@id([experienceId, variantId])
+}
+
+// ============================================================
+// SKILL
+// ============================================================
+model Skill {
+  id       Int     @id @default(autoincrement())
+  name     String
+  category String
+  level    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  variants SkillVariant[]
+}
+
+model SkillVariant {
+  skillId   Int
+  variantId Int
+
+  skill   Skill   @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  variant Variant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@id([skillId, variantId])
+}
+
+// ============================================================
+// EDUCATION
+// ============================================================
+model Education {
+  id          Int       @id @default(autoincrement())
+  degree      String
+  institution String
+  startDate   DateTime
+  endDate     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  variants EducationVariant[]
+}
+
+model EducationVariant {
+  educationId Int
+  variantId   Int
+
+  education Education @relation(fields: [educationId], references: [id], onDelete: Cascade)
+  variant   Variant   @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@id([educationId, variantId])
+}
+
+// ============================================================
+// PROJECT
+// ============================================================
+model Project {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String  @db.Text // Markdown
+  url         String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  variants ProjectVariant[]
+}
+
+model ProjectVariant {
+  projectId Int
+  variantId Int
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  variant Variant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, variantId])
+}

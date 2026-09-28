@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import type { CvResponseEntity } from './public-response.entity.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { ProfileService } from '../cv/profile/profile.service.js';
 
@@ -9,7 +10,7 @@ export class PublicService {
     private profileService: ProfileService,
   ) {}
 
-  async getCvByVariant(slug: string) {
+  async getCvByVariant(slug: string): Promise<CvResponseEntity> {
     const variant = await this.prisma.variant.findUnique({
       where: { slug },
       include: {

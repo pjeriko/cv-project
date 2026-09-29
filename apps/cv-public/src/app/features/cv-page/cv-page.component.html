@@ -1,0 +1,27 @@
+<div class="h-screen overflow-y-scroll snap-y snap-mandatory">
+  @switch (state().status) {
+    @case ('loading') {
+      <section class="h-screen flex items-center justify-center snap-start">
+        <p>Chargement…</p>
+      </section>
+    }
+    @case ('not-found') {
+      <section class="h-screen flex items-center justify-center snap-start">
+        <p>Variante de CV introuvable.</p>
+      </section>
+    }
+    @case ('error') {
+      <section class="h-screen flex items-center justify-center snap-start">
+        <p>Une erreur est survenue. Merci de réessayer plus tard.</p>
+      </section>
+    }
+    @case ('success') {
+      <!-- Les 5 sections seront ajoutées à l'ÉTAPE 4 -->
+      <section class="h-screen snap-start"><!-- ProfileSectionComponent --></section>
+      <section class="h-screen snap-start"><!-- SkillsSectionComponent --></section>
+      <section class="h-screen snap-start"><!-- ExperiencesSectionComponent --></section>
+      <section class="h-screen snap-start"><!-- EducationsSectionComponent --></section>
+      <section class="h-screen snap-start"><!-- ProjectsSectionComponent --></section>
+    }
+  }
+</div>

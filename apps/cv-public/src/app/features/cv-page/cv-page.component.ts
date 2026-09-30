@@ -7,6 +7,7 @@ import { CvService } from '../../core/services/cv.service';
 import { ProfileSectionComponent } from './sections/profile-section.component';
 import { SkillsSectionComponent } from './sections/skills-section.component';
 import { ExperiencesSectionComponent } from './sections/experiences-section.component';
+import { EducationsSectionComponent } from './sections/educations-section.component';
 
 type CvPageState =
   | { status: 'loading' }
@@ -17,7 +18,12 @@ type CvPageState =
 @Component({
   selector: 'app-cv-page',
   standalone: true,
-  imports: [ProfileSectionComponent, SkillsSectionComponent, ExperiencesSectionComponent],
+  imports: [
+    ProfileSectionComponent,
+    SkillsSectionComponent,
+    ExperiencesSectionComponent,
+    EducationsSectionComponent,
+  ],
   templateUrl: './cv-page.component.html',
 })
 export class CvPageComponent {

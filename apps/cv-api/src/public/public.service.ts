@@ -15,7 +15,13 @@ export class PublicService {
       where: { slug },
       include: {
         skills: { include: { skill: true } },
-        experiences: { include: { experience: true } },
+        experiences: {
+          include: { experience: true },
+          orderBy: [
+            { experience: { startDate: 'desc' } },
+            { experienceId: 'desc' },
+          ],
+        },
         educations: { include: { education: true } },
         projects: { include: { project: true } },
       },

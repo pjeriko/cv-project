@@ -22,7 +22,13 @@ export class PublicService {
             { experienceId: 'desc' },
           ],
         },
-        educations: { include: { education: true } },
+        educations: {
+          include: { education: true },
+          orderBy: [
+            { education: { startDate: 'desc' } },
+            { educationId: 'desc' },
+          ],
+        },
         projects: { include: { project: true } },
       },
     });

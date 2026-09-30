@@ -1,9 +1,10 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { CvResponse } from '@cv-project/shared-types';
 import { CvService } from '../../core/services/cv.service';
+import { ProfileSectionComponent } from './sections/profile-section.component';
 
 type CvPageState =
   | { status: 'loading' }
@@ -14,6 +15,7 @@ type CvPageState =
 @Component({
   selector: 'app-cv-page',
   standalone: true,
+  imports: [ProfileSectionComponent],
   templateUrl: './cv-page.component.html',
 })
 export class CvPageComponent {
@@ -34,5 +36,12 @@ export class CvPageComponent {
 
   state = toSignal(this.state$, {
     initialValue: { status: 'loading' } satisfies CvPageState,
+  });
+
+  // Expose le CV uniquement dans l'état 'success' (réduction de type faite en TypeScript,
+  // car le template ne peut pas réduire l'union à travers l'appel du signal).
+  cv = computed(() => {
+    const s = this.state();
+    return s.status === 'success' ? s.cv : null;
   });
 }

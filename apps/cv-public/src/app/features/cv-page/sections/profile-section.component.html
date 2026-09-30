@@ -1,0 +1,46 @@
+<div class="h-full flex flex-col items-center justify-center gap-6 px-6 text-center">
+  <p class="text-sm uppercase tracking-widest text-gray-500">{{ variant().label }}</p>
+
+  <div>
+    <h1 class="text-4xl font-bold sm:text-5xl">{{ profile().fullName }}</h1>
+    <h2 class="mt-2 text-xl text-gray-700">{{ profile().title }}</h2>
+  </div>
+
+  @if (summary(); as text) {
+    <p class="max-w-2xl text-gray-700">{{ text }}</p>
+  }
+
+  <ul class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
+    <li>
+      <a class="underline" [href]="'mailto:' + profile().email">{{ profile().email }}</a>
+    </li>
+    @if (profile().phone; as phone) {
+      <li>
+        <a class="underline" [href]="'tel:' + phone">{{ phone }}</a>
+      </li>
+    }
+    @if (profile().location; as location) {
+      <li>{{ location }}</li>
+    }
+  </ul>
+
+  @if (profile().linkedin || profile().github || profile().website) {
+    <ul class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
+      @if (profile().linkedin; as url) {
+        <li>
+          <a class="underline" [href]="url" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </li>
+      }
+      @if (profile().github; as url) {
+        <li>
+          <a class="underline" [href]="url" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </li>
+      }
+      @if (profile().website; as url) {
+        <li>
+          <a class="underline" [href]="url" target="_blank" rel="noopener noreferrer">Site web</a>
+        </li>
+      }
+    </ul>
+  }
+</div>

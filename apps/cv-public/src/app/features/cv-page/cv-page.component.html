@@ -21,7 +21,9 @@
           <app-profile-section [profile]="cvData.profile" [variant]="cvData.variant" />
         </section>
         <!-- Les 4 autres sections seront ajoutées une par une -->
-        <section class="h-screen snap-start"><!-- SkillsSectionComponent --></section>
+        <section class="h-screen snap-start">
+          <app-skills-section [skills]="cvData.skills" />
+        </section>
         <section class="h-screen snap-start"><!-- ExperiencesSectionComponent --></section>
         <section class="h-screen snap-start"><!-- EducationsSectionComponent --></section>
         <section class="h-screen snap-start"><!-- ProjectsSectionComponent --></section>

@@ -1,0 +1,25 @@
+<div class="flex h-full flex-col justify-center gap-6 p-6">
+  <h2 class="text-2xl font-bold">Compétences</h2>
+
+  @if (groups().length > 0) {
+    @for (group of groups(); track group.category) {
+      <div>
+        <h3 class="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
+          {{ group.category }}
+        </h3>
+        <ul class="flex flex-wrap gap-2">
+          @for (skill of group.skills; track skill.id) {
+            <li class="rounded-full border px-3 py-1 text-sm">
+              {{ skill.name }}
+              @if (skill.level) {
+                <span class="text-gray-500">· {{ skill.level }}</span>
+              }
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  } @else {
+    <p class="text-gray-500">Aucune compétence renseignée.</p>
+  }
+</div>

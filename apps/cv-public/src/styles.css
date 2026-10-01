@@ -1,3 +1,36 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+
+@import '@fontsource/antonio/700.css';
+@import '@fontsource/sofia-sans/400.css';
+@import '@fontsource/sofia-sans/700.css';
+
+@theme {
+  --color-page: #151514; /* fond du body */
+  --color-copy: #99aab2; /* titres, sous-titres, paragraphes */
+  --color-accent: #e8398d; /* boutons */
+  --color-surface: #4059a4; /* cartouches, tableaux, bordures */
+
+  --font-title: 'Antonio', sans-serif;
+  --font-body: 'Sofia Sans', sans-serif;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-page);
+    color: var(--color-copy);
+    font-family: var(--font-body);
+    font-weight: 400;
+  }
+
+  h1,
+  h2 {
+    font-family: var(--font-title);
+    font-weight: 700;
+  }
+
+  h3,
+  h4 {
+    font-family: var(--font-body);
+    font-weight: 700;
+  }
+}

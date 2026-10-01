@@ -54,6 +54,7 @@ export interface Project {
   name: string;
   description: string;
   url: string | null;
+  position: number;
   createdAt: string;
   updatedAt: string;
 }

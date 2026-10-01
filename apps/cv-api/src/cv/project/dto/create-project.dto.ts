@@ -13,5 +13,6 @@ export class CreateProjectDto {
   @IsOptional()
   @IsUrl({ require_protocol: true, protocols: ['http', 'https'] })
   url?: string;
+  @IsOptional() @IsInt() position?: number;
   @IsOptional() @IsArray() @IsInt({ each: true }) variantIds?: number[];
 }

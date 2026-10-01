@@ -52,7 +52,7 @@ export interface Education {
 export interface Project {
   id: number;
   name: string;
-  description: string | null;
+  description: string;
   url: string | null;
   createdAt: string;
   updatedAt: string;

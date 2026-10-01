@@ -1,13 +1,13 @@
-<div class="h-full overflow-y-auto p-6">
+<div class="h-full overflow-y-auto p-6 md:p-8">
   <div class="flex min-h-full flex-col justify-center gap-6">
-    <h2 class="text-2xl font-bold">Expériences</h2>
+    <h2 class="text-2xl">Expériences</h2>
 
     @if (experiences().length > 0) {
       @for (experience of experiences(); track experience.id) {
-        <article class="flex flex-col gap-1">
-          <h3 class="text-lg font-semibold">{{ experience.position }}</h3>
-          <p class="text-sm text-gray-600">{{ experience.company }}</p>
-          <p class="text-sm text-gray-500">
+        <article class="flex flex-col gap-1 border-l-2 border-surface pl-4">
+          <h3 class="text-lg">{{ experience.position }}</h3>
+          <p class="text-sm text-accent">{{ experience.company }}</p>
+          <p class="text-sm opacity-70">
             {{ experience.startDate | date: 'MMM y' }} –
             @if (experience.endDate) {
               {{ experience.endDate | date: 'MMM y' }}

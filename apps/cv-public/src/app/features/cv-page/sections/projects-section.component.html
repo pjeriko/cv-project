@@ -1,24 +1,25 @@
-<div class="h-full overflow-y-auto p-6">
+<div class="h-full overflow-y-auto p-6 md:p-8">
   <div class="flex min-h-full flex-col justify-center gap-6">
-    <h2 class="text-2xl font-bold">Projets</h2>
+    <h2 class="text-2xl">Projets</h2>
 
     @for (project of projects(); track project.id) {
-      <article class="flex flex-col gap-1">
-        <h3 class="text-lg font-semibold">{{ project.name }}</h3>
+      <article class="flex flex-col gap-1 border-l-2 border-surface pl-4">
+        <h3 class="text-lg">{{ project.name }}</h3>
         <p class="mt-1 whitespace-pre-line">{{ project.description }}</p>
         @if (project.url) {
           <a
             [href]="project.url"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-sm text-blue-600 underline"
+            [attr.aria-label]="'Voir le projet ' + project.name + ' (nouvel onglet)'"
+            class="text-sm text-accent underline"
           >
             Voir le projet
           </a>
         }
       </article>
     } @empty {
-      <p class="text-gray-500">Aucun projet renseigné.</p>
+      <p>Aucun projet renseigné.</p>
     }
   </div>
 </div>

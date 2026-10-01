@@ -10,6 +10,8 @@ import {
 export class CreateProjectDto {
   @IsString() @IsNotEmpty() name: string;
   @IsString() @IsNotEmpty() description: string;
-  @IsOptional() @IsUrl() url?: string;
+  @IsOptional()
+  @IsUrl({ require_protocol: true, protocols: ['http', 'https'] })
+  url?: string;
   @IsOptional() @IsArray() @IsInt({ each: true }) variantIds?: number[];
 }

@@ -8,6 +8,7 @@ import { ProfileSectionComponent } from './sections/profile-section.component';
 import { SkillsSectionComponent } from './sections/skills-section.component';
 import { ExperiencesSectionComponent } from './sections/experiences-section.component';
 import { EducationsSectionComponent } from './sections/educations-section.component';
+import { ProjectsSectionComponent } from './sections/projects-section.component';
 
 type CvPageState =
   | { status: 'loading' }
@@ -23,6 +24,7 @@ type CvPageState =
     SkillsSectionComponent,
     ExperiencesSectionComponent,
     EducationsSectionComponent,
+    ProjectsSectionComponent,
   ],
   templateUrl: './cv-page.component.html',
 })

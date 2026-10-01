@@ -29,7 +29,10 @@ export class PublicService {
             { educationId: 'desc' },
           ],
         },
-        projects: { include: { project: true } },
+        projects: {
+          include: { project: true },
+          orderBy: [{ project: { position: 'asc' } }, { projectId: 'desc' }],
+        },
       },
     });
 

@@ -15,7 +15,7 @@
               Aujourd'hui
             }
           </p>
-          <p class="mt-1 whitespace-pre-line">{{ experience.description }}</p>
+          <app-markdown class="mt-1" [source]="experience.description" />
         </article>
       }
     } @else {

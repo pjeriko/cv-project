@@ -48,6 +48,33 @@
   }
 }
 
+@layer components {
+  .markdown > * + * {
+    margin-top: 0.75rem;
+  }
+  .markdown strong {
+    font-weight: 700;
+  }
+  .markdown em {
+    font-style: italic;
+  }
+  .markdown ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  .markdown ol {
+    list-style: decimal;
+    padding-left: 1.25rem;
+  }
+  .markdown li + li {
+    margin-top: 0.25rem;
+  }
+  .markdown a {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   [class*='animate-zoom-in'] {
     animation: none;

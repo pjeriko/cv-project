@@ -4,11 +4,13 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
+    title: 'CV en ligne',
     loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent),
   },
   {
     path: 'cv',
     pathMatch: 'full',
+    title: 'CV en ligne',
     loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent),
   },
   {
@@ -18,6 +20,7 @@ export const routes: Routes = [
   },
   {
     path: '**',
+    title: 'Page introuvable',
     loadComponent: () =>
       import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent),
   },

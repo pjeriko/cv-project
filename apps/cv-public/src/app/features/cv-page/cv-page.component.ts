@@ -1,6 +1,7 @@
-import { Component, DestroyRef, computed, inject, input, signal } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, input, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Title } from '@angular/platform-browser';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { CvResponse } from '@cv-project/shared-types';
 import { CvService } from '../../core/services/cv.service';
@@ -31,6 +32,16 @@ const SECTIONS: readonly { id: SectionId; label: string }[] = [
 const DESKTOP_QUERY = '(min-width: 768px)';
 const SWIPE_MIN_DISTANCE = 50;
 
+const DEFAULT_TITLE = 'CV en ligne';
+const TITLE_SEPARATOR = ' — ';
+
+// Titre d'onglet : « {libellé de la variante} — {nom} », en ignorant les parties vides.
+function buildCvTitle(cv: CvResponse): string {
+  return (
+    [cv.variant.label, cv.profile.fullName].filter(Boolean).join(TITLE_SEPARATOR) || DEFAULT_TITLE
+  );
+}
+
 @Component({
   selector: 'app-cv-page',
   standalone: true,
@@ -46,6 +57,7 @@ const SWIPE_MIN_DISTANCE = 50;
 })
 export class CvPageComponent {
   private readonly cvService = inject(CvService);
+  private readonly titleService = inject(Title);
 
   slug = input.required<string>();
 
@@ -67,6 +79,22 @@ export class CvPageComponent {
     const onChange = (e: MediaQueryListEvent) => this.isDesktop.set(e.matches);
     this.mediaQuery.addEventListener('change', onChange);
     inject(DestroyRef).onDestroy(() => this.mediaQuery.removeEventListener('change', onChange));
+
+    // Le titre suit l'état ; rien n'est posé pendant le chargement.
+    effect(() => {
+      const s = this.state();
+      switch (s.status) {
+        case 'success':
+          this.titleService.setTitle(buildCvTitle(s.cv));
+          break;
+        case 'not-found':
+          this.titleService.setTitle('Variante introuvable');
+          break;
+        case 'error':
+          this.titleService.setTitle('Erreur de chargement');
+          break;
+      }
+    });
   }
 
   private readonly state$ = toObservable(this.slug).pipe(

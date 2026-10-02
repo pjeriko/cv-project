@@ -9,7 +9,7 @@
   </div>
 
   @if (summary(); as text) {
-    <p class="max-w-2xl md:max-w-none">{{ text }}</p>
+    <app-markdown class="max-w-2xl md:max-w-none" [source]="text" />
   }
 
   <ul

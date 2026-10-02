@@ -2,6 +2,7 @@ import { Component, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Experience } from '@cv-project/shared-types';
 import { MarkdownComponent } from '../../../shared/markdown/markdown.component';
+import { itemDelay } from '../../../shared/animation/item-delay';
 
 @Component({
   selector: 'app-experiences-section',
@@ -11,4 +12,6 @@ import { MarkdownComponent } from '../../../shared/markdown/markdown.component';
 })
 export class ExperiencesSectionComponent {
   experiences = input.required<Experience[]>();
+
+  readonly itemDelay = itemDelay;
 }

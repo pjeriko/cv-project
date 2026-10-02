@@ -4,7 +4,10 @@
 
     @if (experiences().length > 0) {
       @for (experience of experiences(); track experience.id) {
-        <article class="flex flex-col gap-1 border-l-2 border-surface pl-4">
+        <article
+          class="flex animate-item-in flex-col gap-1 border-l-2 border-surface pl-4"
+          [style.animation-delay.ms]="itemDelay($index)"
+        >
           <h3 class="text-lg">{{ experience.position }}</h3>
           <p class="text-sm text-accent">{{ experience.company }}</p>
           <p class="text-sm opacity-70">

@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-not-found',
   standalone: true,
   templateUrl: './not-found.component.html',
-  host: { class: 'block h-screen' },
+  host: { class: 'block h-dvh' },
 })
 export class NotFoundComponent {}

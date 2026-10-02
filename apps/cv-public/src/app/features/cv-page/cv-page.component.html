@@ -1,39 +1,61 @@
-<div class="h-screen overflow-y-scroll snap-y snap-mandatory">
-  @switch (state().status) {
-    @case ('loading') {
-      <section class="h-screen flex items-center justify-center snap-start">
-        <p>Chargement…</p>
-      </section>
-    }
-    @case ('not-found') {
-      <section class="h-screen flex items-center justify-center snap-start">
-        <p>Variante de CV introuvable.</p>
-      </section>
-    }
-    @case ('error') {
-      <section class="h-screen flex items-center justify-center snap-start">
-        <p>Une erreur est survenue. Merci de réessayer plus tard.</p>
-      </section>
-    }
-    @case ('success') {
-      @if (cv(); as cvData) {
-        <section class="h-screen snap-start">
-          <app-profile-section [profile]="cvData.profile" [variant]="cvData.variant" />
-        </section>
-        <!-- Les 4 autres sections seront ajoutées une par une -->
-        <section class="h-screen snap-start">
-          <app-skills-section [skills]="cvData.skills" />
-        </section>
-        <section class="h-screen snap-start">
-          <app-experiences-section [experiences]="cvData.experiences" />
-        </section>
-        <section class="h-screen snap-start">
-          <app-educations-section [educations]="cvData.educations" />
-        </section>
-        <section class="h-screen snap-start">
-          <app-projects-section [projects]="cvData.projects" />
-        </section>
-      }
+@switch (state().status) {
+  @case ('loading') {
+    <div class="flex h-dvh items-center justify-center">
+      <p>Chargement…</p>
+    </div>
+  }
+  @case ('not-found') {
+    <div class="flex h-dvh items-center justify-center">
+      <p>Variante de CV introuvable.</p>
+    </div>
+  }
+  @case ('error') {
+    <div class="flex h-dvh items-center justify-center">
+      <p>Une erreur est survenue. Merci de réessayer plus tard.</p>
+    </div>
+  }
+  @case ('success') {
+    @if (cv(); as cvData) {
+      <div class="flex h-dvh flex-col" style="--nav-h: 4rem">
+        <div
+          #track
+          (scroll)="onScroll($event)"
+          class="flex h-[calc(100dvh-var(--nav-h))] snap-x snap-mandatory overflow-x-auto overflow-y-hidden [scrollbar-none] [&::-webkit-scrollbar]:hidden"
+        >
+          <section class="h-full w-full shrink-0 snap-center" aria-label="Profil">
+            <app-profile-section [profile]="cvData.profile" [variant]="cvData.variant" />
+          </section>
+          <section class="h-full w-full shrink-0 snap-center" aria-label="Compétences">
+            <app-skills-section [skills]="cvData.skills" />
+          </section>
+          <section class="h-full w-full shrink-0 snap-center" aria-label="Expériences">
+            <app-experiences-section [experiences]="cvData.experiences" />
+          </section>
+          <section class="h-full w-full shrink-0 snap-center" aria-label="Formations">
+            <app-educations-section [educations]="cvData.educations" />
+          </section>
+          <section class="h-full w-full shrink-0 snap-center" aria-label="Projets">
+            <app-projects-section [projects]="cvData.projects" />
+          </section>
+        </div>
+
+        <nav
+          aria-label="Sections du CV"
+          class="flex h-[h-(--nav-h)] border-t border-surface bg-page"
+        >
+          @for (section of sections; track section.id) {
+            <button
+              type="button"
+              class="flex-1 px-1 text-sm focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
+              [class.text-accent]="activeSection() === section.id"
+              [attr.aria-current]="activeSection() === section.id ? 'true' : null"
+              (click)="goTo(section.id)"
+            >
+              {{ section.label }}
+            </button>
+          }
+        </nav>
+      </div>
     }
   }
-</div>
+}

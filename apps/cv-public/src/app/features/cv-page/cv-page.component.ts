@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, ElementRef, computed, inject, input, signal, viewChild } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, of, switchMap } from 'rxjs';
@@ -16,6 +16,17 @@ type CvPageState =
   | { status: 'not-found' }
   | { status: 'error' };
 
+type SectionId = 'profile' | 'skills' | 'experiences' | 'educations' | 'projects';
+
+// Ordre = ordre des slides sur mobile et ordre des boutons de navigation.
+const SECTIONS: readonly { id: SectionId; label: string }[] = [
+  { id: 'profile', label: 'Profil' },
+  { id: 'skills', label: 'Compétences' },
+  { id: 'experiences', label: 'Expériences' },
+  { id: 'educations', label: 'Formations' },
+  { id: 'projects', label: 'Projets' },
+];
+
 @Component({
   selector: 'app-cv-page',
   standalone: true,
@@ -32,6 +43,12 @@ export class CvPageComponent {
   private readonly cvService = inject(CvService);
 
   slug = input.required<string>();
+
+  protected readonly sections = SECTIONS;
+  protected readonly activeSection = signal<SectionId>('profile');
+
+  // Conteneur horizontal des slides (absent tant que l'état n'est pas 'success').
+  private readonly track = viewChild<ElementRef<HTMLElement>>('track');
 
   private readonly state$ = toObservable(this.slug).pipe(
     switchMap((slug) =>
@@ -54,4 +71,22 @@ export class CvPageComponent {
     const s = this.state();
     return s.status === 'success' ? s.cv : null;
   });
+
+  // Source de vérité unique : la position de scroll. Le signal en est déduit.
+  protected onScroll(event: Event): void {
+    const el = event.target as HTMLElement;
+    if (el.clientWidth === 0) return;
+    const section = SECTIONS[Math.round(el.scrollLeft / el.clientWidth)];
+    if (section) {
+      this.activeSection.set(section.id);
+    }
+  }
+
+  // Un clic fait défiler ; le signal se met à jour via onScroll.
+  protected goTo(id: SectionId): void {
+    const el = this.track()?.nativeElement;
+    if (!el) return;
+    const index = SECTIONS.findIndex((s) => s.id === id);
+    el.scrollTo({ left: index * el.clientWidth, behavior: 'smooth' });
+  }
 }

@@ -1,5 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import type { Skill } from '@cv-project/shared-types';
+import { itemDelay } from '../../../shared/animation/item-delay';
 
 interface SkillGroup {
   category: string;
@@ -24,6 +25,7 @@ export class SkillsSectionComponent {
   skills = input.required<Skill[]>();
 
   readonly maxLevel = MAX_LEVEL;
+  readonly itemDelay = itemDelay;
 
   // Regroupe par category, dans l'ordre d'apparition dans le tableau reçu
   // (une Map conserve l'ordre d'insertion).

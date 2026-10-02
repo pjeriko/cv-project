@@ -2,20 +2,51 @@
   <div class="flex min-h-full flex-col justify-center gap-6">
     <h2 class="text-2xl">Projets</h2>
 
-    @for (project of projects(); track project.id) {
-      <article class="flex flex-col gap-1 border-l-2 border-surface pl-4">
-        <h3 class="text-lg">{{ project.name }}</h3>
-        <app-markdown class="mt-1" [source]="project.description" />
-        @if (project.url) {
-          <a
-            [href]="project.url"
-            target="_blank"
-            rel="noopener noreferrer"
-            [attr.aria-label]="'Voir le projet ' + project.name + ' (nouvel onglet)'"
-            class="text-sm text-accent underline"
+    @for (project of projects(); track project.id; let i = $index) {
+      <article
+        class="animate-item-in flex flex-col gap-1 border-l-2 border-surface pl-4"
+        [style.animation-delay.ms]="itemDelay(i)"
+      >
+        <h3 class="text-lg">
+          <button
+            type="button"
+            class="flex w-full cursor-pointer items-center justify-between gap-2 text-left focus-visible:outline-2 focus-visible:outline-accent"
+            [attr.aria-expanded]="isOpen(project.id)"
+            [attr.aria-controls]="isOpen(project.id) ? 'project-panel-' + project.id : null"
+            (click)="toggle(project.id)"
           >
-            Voir le projet
-          </a>
+            <span>{{ project.name }}</span>
+            <svg
+              class="h-5 w-5 shrink-0 text-accent transition-transform duration-200 motion-reduce:transition-none"
+              [class.rotate-180]="isOpen(project.id)"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M5 8l5 5 5-5" />
+            </svg>
+          </button>
+        </h3>
+
+        @if (isOpen(project.id)) {
+          <div [id]="'project-panel-' + project.id" class="mt-1 flex flex-col gap-1">
+            <app-markdown [source]="project.description" />
+            @if (project.url) {
+              <a
+                [href]="project.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                [attr.aria-label]="'Voir le projet ' + project.name + ' (nouvel onglet)'"
+                class="text-sm text-accent underline"
+              >
+                Voir le projet
+              </a>
+            }
+          </div>
         }
       </article>
     } @empty {

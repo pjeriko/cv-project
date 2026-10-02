@@ -12,7 +12,15 @@
             @for (skill of group.skills; track skill.id) {
               <li class="rounded-full border border-surface px-3 py-1 text-sm">
                 {{ skill.name }}
-                @if (skill.level) {
+                @let score = levelScore(skill.level);
+                @if (score) {
+                  <span
+                    class="font-bold text-accent"
+                    role="img"
+                    [attr.aria-label]="'Niveau ' + score + ' sur ' + maxLevel"
+                    >{{ plusSigns(score) }}</span
+                  >
+                } @else if (skill.level) {
                   <span class="opacity-70">· {{ skill.level }}</span>
                 }
               </li>

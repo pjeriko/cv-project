@@ -6,6 +6,15 @@ interface SkillGroup {
   skills: Skill[];
 }
 
+// Correspondance libellé en base -> nombre de « + » (1 à 3).
+// Un libellé absent de cette table est affiché tel quel, sans « + ».
+// Clés en minuscules : la comparaison ignore la casse et les espaces autour.
+const LEVEL_SCORES: Record<string, number> = {
+  intermédiaire: 2,
+  avancé: 3,
+};
+const MAX_LEVEL = 3;
+
 @Component({
   selector: 'app-skills-section',
   templateUrl: './skills-section.component.html',
@@ -13,6 +22,8 @@ interface SkillGroup {
 })
 export class SkillsSectionComponent {
   skills = input.required<Skill[]>();
+
+  readonly maxLevel = MAX_LEVEL;
 
   // Regroupe par category, dans l'ordre d'apparition dans le tableau reçu
   // (une Map conserve l'ordre d'insertion).
@@ -28,4 +39,16 @@ export class SkillsSectionComponent {
     }
     return Array.from(byCategory, ([category, skills]) => ({ category, skills }));
   });
+
+  // Renvoie 1 à 3 si le libellé est connu, sinon null.
+  levelScore(level: string | null): number | null {
+    if (!level) {
+      return null;
+    }
+    return LEVEL_SCORES[level.trim().toLowerCase()] ?? null;
+  }
+
+  plusSigns(score: number): string {
+    return '+'.repeat(score);
+  }
 }

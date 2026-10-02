@@ -16,42 +16,73 @@
   }
   @case ('success') {
     @if (cv(); as cvData) {
-      <div class="flex h-dvh flex-col" style="--nav-h: 4rem">
-        <div
-          #track
-          (scroll)="onScroll($event)"
-          class="flex h-[calc(100dvh-var(--nav-h))] snap-x snap-mandatory overflow-x-auto overflow-y-hidden [scrollbar-none] [&::-webkit-scrollbar]:hidden"
+      <div
+        class="flex h-dvh touch-pan-y touch-pinch-zoom flex-col md:grid md:grid-cols-[18rem_minmax(0,1fr)] md:grid-rows-[minmax(0,1fr)_auto]"
+        (touchstart)="onTouchStart($event)"
+        (touchend)="onTouchEnd($event)"
+      >
+        <!-- Profil : une slide sur mobile, colonne gauche permanente dès md -->
+        <section
+          class="min-h-0 flex-1 overflow-hidden max-md:animate-zoom-in md:col-start-1 md:row-start-1 md:block md:border-r md:border-surface"
+          [class.hidden]="activeSection() !== 'profile'"
+          aria-label="Profil"
         >
-          <section class="h-full w-full shrink-0 snap-center" aria-label="Profil">
-            <app-profile-section [profile]="cvData.profile" [variant]="cvData.variant" />
-          </section>
-          <section class="h-full w-full shrink-0 snap-center" aria-label="Compétences">
-            <app-skills-section [skills]="cvData.skills" />
-          </section>
-          <section class="h-full w-full shrink-0 snap-center" aria-label="Expériences">
-            <app-experiences-section [experiences]="cvData.experiences" />
-          </section>
-          <section class="h-full w-full shrink-0 snap-center" aria-label="Formations">
-            <app-educations-section [educations]="cvData.educations" />
-          </section>
-          <section class="h-full w-full shrink-0 snap-center" aria-label="Projets">
-            <app-projects-section [projects]="cvData.projects" />
-          </section>
-        </div>
+          <app-profile-section [profile]="cvData.profile" [variant]="cvData.variant" />
+        </section>
 
+        <section
+          class="min-h-0 flex-1 animate-zoom-in overflow-hidden md:col-start-2 md:row-span-2 md:row-start-1"
+          [class.hidden]="current() !== 'skills'"
+          aria-label="Compétences"
+        >
+          <app-skills-section [skills]="cvData.skills" />
+        </section>
+
+        <section
+          class="min-h-0 flex-1 animate-zoom-in overflow-hidden md:col-start-2 md:row-span-2 md:row-start-1"
+          [class.hidden]="current() !== 'experiences'"
+          aria-label="Expériences"
+        >
+          <app-experiences-section [experiences]="cvData.experiences" />
+        </section>
+
+        <section
+          class="min-h-0 flex-1 animate-zoom-in overflow-hidden md:col-start-2 md:row-span-2 md:row-start-1"
+          [class.hidden]="current() !== 'educations'"
+          aria-label="Formations"
+        >
+          <app-educations-section [educations]="cvData.educations" />
+        </section>
+
+        <section
+          class="min-h-0 flex-1 animate-zoom-in overflow-hidden md:col-start-2 md:row-span-2 md:row-start-1"
+          [class.hidden]="current() !== 'projects'"
+          aria-label="Projets"
+        >
+          <app-projects-section [projects]="cvData.projects" />
+        </section>
+
+        <!-- Mobile : 5 points. Desktop : liste verticale dans la colonne gauche. -->
         <nav
           aria-label="Sections du CV"
-          class="flex h-[h-(--nav-h)] border-t border-surface bg-page"
+          class="flex h-12 items-center justify-center gap-1 md:col-start-1 md:row-start-2 md:h-auto md:flex-col md:items-stretch md:justify-start md:gap-1 md:border-r md:border-surface md:p-8 md:pt-0"
         >
           @for (section of sections; track section.id) {
             <button
               type="button"
-              class="flex-1 px-1 text-sm focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
-              [class.text-accent]="activeSection() === section.id"
-              [attr.aria-current]="activeSection() === section.id ? 'true' : null"
+              class="p-2 text-left focus-visible:outline-2 focus-visible:outline-accent md:px-0 md:py-1.5 md:text-base"
+              [class.md:hidden]="section.id === 'profile'"
+              [class.text-accent]="current() === section.id"
+              [attr.aria-current]="current() === section.id ? 'true' : null"
               (click)="goTo(section.id)"
             >
-              {{ section.label }}
+              <span
+                class="block size-2.5 rounded-full md:hidden"
+                [class.bg-accent]="current() === section.id"
+                [class.bg-copy/40]="current() !== section.id"
+                aria-hidden="true"
+              ></span>
+              <span class="sr-only md:not-sr-only">{{ section.label }}</span>
             </button>
           }
         </nav>

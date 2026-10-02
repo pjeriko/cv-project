@@ -1,4 +1,4 @@
-import { Component, ElementRef, computed, inject, input, signal, viewChild } from '@angular/core';
+import { Component, DestroyRef, computed, inject, input, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, of, switchMap } from 'rxjs';
@@ -18,7 +18,7 @@ type CvPageState =
 
 type SectionId = 'profile' | 'skills' | 'experiences' | 'educations' | 'projects';
 
-// Ordre = ordre des slides sur mobile et ordre des boutons de navigation.
+// Ordre = ordre des sections au swipe et des boutons de navigation.
 const SECTIONS: readonly { id: SectionId; label: string }[] = [
   { id: 'profile', label: 'Profil' },
   { id: 'skills', label: 'Compétences' },
@@ -26,6 +26,10 @@ const SECTIONS: readonly { id: SectionId; label: string }[] = [
   { id: 'educations', label: 'Formations' },
   { id: 'projects', label: 'Projets' },
 ];
+
+// Correspond au breakpoint `md` de Tailwind (48rem).
+const DESKTOP_QUERY = '(min-width: 768px)';
+const SWIPE_MIN_DISTANCE = 50;
 
 @Component({
   selector: 'app-cv-page',
@@ -38,6 +42,7 @@ const SECTIONS: readonly { id: SectionId; label: string }[] = [
     ProjectsSectionComponent,
   ],
   templateUrl: './cv-page.component.html',
+  host: { '(document:keydown)': 'onKeydown($event)' },
 })
 export class CvPageComponent {
   private readonly cvService = inject(CvService);
@@ -47,8 +52,22 @@ export class CvPageComponent {
   protected readonly sections = SECTIONS;
   protected readonly activeSection = signal<SectionId>('profile');
 
-  // Conteneur horizontal des slides (absent tant que l'état n'est pas 'success').
-  private readonly track = viewChild<ElementRef<HTMLElement>>('track');
+  private readonly mediaQuery = window.matchMedia(DESKTOP_QUERY);
+  protected readonly isDesktop = signal(this.mediaQuery.matches);
+
+  // Section réellement affichée : sur desktop le profil est dans la colonne gauche,
+  // donc « profile » actif y équivaut à la première section de contenu.
+  protected readonly current = computed<SectionId>(() =>
+    this.isDesktop() && this.activeSection() === 'profile' ? 'skills' : this.activeSection(),
+  );
+
+  private touchStart: { x: number; y: number } | null = null;
+
+  constructor() {
+    const onChange = (e: MediaQueryListEvent) => this.isDesktop.set(e.matches);
+    this.mediaQuery.addEventListener('change', onChange);
+    inject(DestroyRef).onDestroy(() => this.mediaQuery.removeEventListener('change', onChange));
+  }
 
   private readonly state$ = toObservable(this.slug).pipe(
     switchMap((slug) =>
@@ -72,21 +91,44 @@ export class CvPageComponent {
     return s.status === 'success' ? s.cv : null;
   });
 
-  // Source de vérité unique : la position de scroll. Le signal en est déduit.
-  protected onScroll(event: Event): void {
-    const el = event.target as HTMLElement;
-    if (el.clientWidth === 0) return;
-    const section = SECTIONS[Math.round(el.scrollLeft / el.clientWidth)];
-    if (section) {
-      this.activeSection.set(section.id);
+  protected goTo(id: SectionId): void {
+    this.activeSection.set(id);
+  }
+
+  // Section précédente (-1) ou suivante (+1), sans boucle aux extrémités.
+  private step(delta: -1 | 1): void {
+    const list = this.isDesktop() ? SECTIONS.filter((s) => s.id !== 'profile') : SECTIONS;
+    const index = list.findIndex((s) => s.id === this.current());
+    const target = list[index + delta];
+    if (target) {
+      this.activeSection.set(target.id);
     }
   }
 
-  // Un clic fait défiler ; le signal se met à jour via onScroll.
-  protected goTo(id: SectionId): void {
-    const el = this.track()?.nativeElement;
-    if (!el) return;
-    const index = SECTIONS.findIndex((s) => s.id === id);
-    el.scrollTo({ left: index * el.clientWidth, behavior: 'smooth' });
+  protected onTouchStart(event: TouchEvent): void {
+    if (this.isDesktop() || event.touches.length !== 1) {
+      this.touchStart = null;
+      return;
+    }
+    const t = event.touches[0];
+    this.touchStart = { x: t.clientX, y: t.clientY };
+  }
+
+  protected onTouchEnd(event: TouchEvent): void {
+    const start = this.touchStart;
+    this.touchStart = null;
+    if (!start || this.isDesktop()) return;
+    const t = event.changedTouches[0];
+    const dx = t.clientX - start.x;
+    const dy = t.clientY - start.y;
+    // Geste horizontal net : assez long, et nettement plus horizontal que vertical.
+    if (Math.abs(dx) < SWIPE_MIN_DISTANCE || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    this.step(dx < 0 ? 1 : -1);
+  }
+
+  onKeydown(event: KeyboardEvent): void {
+    if (this.isDesktop() || event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.key === 'ArrowRight') this.step(1);
+    else if (event.key === 'ArrowLeft') this.step(-1);
   }
 }

@@ -12,6 +12,19 @@
 
   --font-title: 'Antonio', sans-serif;
   --font-body: 'Sofia Sans', sans-serif;
+
+  --animate-zoom-in: cv-zoom-in 250ms ease-out both;
+
+  @keyframes cv-zoom-in {
+    from {
+      opacity: 0;
+      transform: scale(0.92);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
 }
 
 @layer base {
@@ -32,5 +45,11 @@
   h4 {
     font-family: var(--font-body);
     font-weight: 700;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [class*='animate-zoom-in'] {
+    animation: none;
   }
 }

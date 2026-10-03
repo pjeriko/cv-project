@@ -1,0 +1,11 @@
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.error {
+  color: var(--mat-sys-error);
+}

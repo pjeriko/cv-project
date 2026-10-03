@@ -44,6 +44,7 @@ export class Layout {
   // Une ligne à ajouter ici à chaque ressource construite (décision 91).
   protected readonly navItems: NavItem[] = [
     { label: 'Accueil', path: '/', icon: 'home', exact: true },
+    { label: 'Compétences', path: '/skills', icon: 'code', exact: false },
   ];
 
   protected readonly isDesktop = toSignal(

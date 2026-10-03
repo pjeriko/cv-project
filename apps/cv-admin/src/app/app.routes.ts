@@ -15,6 +15,10 @@ export const routes: Routes = [
         pathMatch: 'full',
         loadComponent: () => import('./home/home').then((m) => m.Home),
       },
+      {
+        path: 'skills',
+        loadComponent: () => import('./skills/skills-list').then((m) => m.SkillsList),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

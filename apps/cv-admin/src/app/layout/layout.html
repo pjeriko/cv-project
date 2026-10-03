@@ -1,0 +1,37 @@
+<mat-toolbar class="toolbar">
+  @if (!isDesktop()) {
+    <button mat-icon-button type="button" aria-label="Ouvrir le menu" (click)="toggleMenu()">
+      <mat-icon fontSet="material-symbols-outlined">menu</mat-icon>
+    </button>
+  }
+  <span class="title">CV Admin</span>
+  <span class="spacer"></span>
+  <button mat-button type="button" (click)="logout()">Se déconnecter</button>
+</mat-toolbar>
+
+<mat-sidenav-container class="container">
+  <mat-sidenav [mode]="isDesktop() ? 'side' : 'over'" [opened]="isDesktop()" class="sidenav">
+    <mat-nav-list>
+      @for (item of navItems; track item.path) {
+        <a
+          mat-list-item
+          [routerLink]="item.path"
+          routerLinkActive
+          #rla="routerLinkActive"
+          [routerLinkActiveOptions]="{ exact: item.exact }"
+          [activated]="rla.isActive"
+          (click)="onNavigate()"
+        >
+          <mat-icon matListItemIcon fontSet="material-symbols-outlined">{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <main class="content">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

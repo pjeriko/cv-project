@@ -1,0 +1,32 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.toolbar {
+  flex: none;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.title {
+  margin-left: 0.5rem;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.container {
+  flex: 1;
+  min-height: 0;
+}
+
+.sidenav {
+  width: 16rem;
+}
+
+.content {
+  padding: 1.5rem;
+}

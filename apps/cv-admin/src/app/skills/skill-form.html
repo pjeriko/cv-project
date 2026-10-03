@@ -1,0 +1,74 @@
+<h1>Nouvelle compétence</h1>
+
+@if (loadingOptions()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (optionsError(); as message) {
+  <p role="alert" class="error">{{ message }}</p>
+  <button mat-stroked-button type="button" (click)="loadOptions()">Réessayer</button>
+} @else if (!loadingOptions()) {
+  <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <mat-form-field appearance="outline">
+      <mat-label>Nom</mat-label>
+      <input matInput formControlName="name" autocomplete="off" />
+      @if (form.controls.name.hasError('required')) {
+        <mat-error>Le nom est obligatoire.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Catégorie</mat-label>
+      <input
+        matInput
+        formControlName="category"
+        autocomplete="off"
+        [matAutocomplete]="categoryAuto"
+      />
+      <mat-autocomplete #categoryAuto="matAutocomplete">
+        @for (category of filteredCategories(); track category) {
+          <mat-option [value]="category">{{ category }}</mat-option>
+        }
+      </mat-autocomplete>
+      @if (form.controls.category.hasError('required')) {
+        <mat-error>La catégorie est obligatoire.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Niveau</mat-label>
+      <mat-select formControlName="level">
+        <mat-option value="">Aucun</mat-option>
+        @for (level of levels; track level) {
+          <mat-option [value]="level">{{ level }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Variantes</mat-label>
+      <mat-select formControlName="variantIds" multiple>
+        @for (variant of variants(); track variant.id) {
+          <mat-option [value]="variant.id">{{ variant.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if (apiErrors().length > 0) {
+      <div role="alert" class="error">
+        <ul>
+          @for (message of apiErrors(); track $index) {
+            <li>{{ message }}</li>
+          }
+        </ul>
+      </div>
+    }
+
+    <div class="actions">
+      <a mat-button routerLink="/skills">Annuler</a>
+      <button mat-flat-button type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Envoi…' : 'Créer' }}
+      </button>
+    </div>
+  </form>
+}

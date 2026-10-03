@@ -19,6 +19,10 @@ export const routes: Routes = [
         path: 'skills',
         loadComponent: () => import('./skills/skills-list').then((m) => m.SkillsList),
       },
+      {
+        path: 'skills/new',
+        loadComponent: () => import('./skills/skill-form').then((m) => m.SkillForm),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

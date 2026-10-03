@@ -5,6 +5,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { SkillWithVariants } from './skill.model';
 import { SkillsService } from './skills.service';
+import { RouterLink } from '@angular/router';
 
 function sortSkills(skills: SkillWithVariants[]): SkillWithVariants[] {
   return [...skills].sort(
@@ -23,7 +24,7 @@ function toMessage(err: unknown): string {
 
 @Component({
   selector: 'app-skills-list',
-  imports: [MatButtonModule, MatProgressBarModule, MatTableModule],
+  imports: [MatButtonModule, MatProgressBarModule, MatTableModule, RouterLink],
   templateUrl: './skills-list.html',
   styleUrl: './skills-list.css',
 })

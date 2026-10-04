@@ -14,6 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CreateVariantPayload, UpdateVariantPayload } from './variant.model';
 import { VariantsService } from './variants.service';
+import { MarkdownEditor } from '../shared/markdown-editor/markdown-editor';
 
 // Le slug sert d'adresse publique (/cv/slug) : minuscules, chiffres, tirets.
 const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -66,6 +67,7 @@ function toMessages(err: unknown): string[] {
     MatFormFieldModule,
     MatInputModule,
     MatProgressBarModule,
+    MarkdownEditor,
     ReactiveFormsModule,
     RouterLink,
   ],

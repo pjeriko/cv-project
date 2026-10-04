@@ -1,0 +1,57 @@
+<h1>{{ isEdit ? 'Modifier la variante' : 'Nouvelle variante' }}</h1>
+
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (loadError(); as message) {
+  <p role="alert" class="error">{{ message }}</p>
+  @if (retryable()) {
+    <button mat-stroked-button type="button" (click)="load()">Réessayer</button>
+  }
+  <a mat-button routerLink="/variants">Retour à la liste</a>
+} @else if (!loading()) {
+  <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <mat-form-field appearance="outline">
+      <mat-label>Slug</mat-label>
+      <input matInput formControlName="slug" autocomplete="off" />
+      <mat-hint>Minuscules, chiffres et tirets (adresse publique : /cv/slug)</mat-hint>
+      @if (form.controls.slug.hasError('required')) {
+        <mat-error>Le slug est obligatoire.</mat-error>
+      } @else if (form.controls.slug.hasError('slugFormat')) {
+        <mat-error>Uniquement minuscules, chiffres et tirets (ex. dev-web).</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Libellé</mat-label>
+      <input matInput formControlName="label" autocomplete="off" />
+      @if (form.controls.label.hasError('required')) {
+        <mat-error>Le libellé est obligatoire.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Résumé</mat-label>
+      <textarea matInput formControlName="summary" rows="6"></textarea>
+      <mat-hint>Markdown accepté</mat-hint>
+    </mat-form-field>
+
+    @if (apiErrors().length > 0) {
+      <div role="alert" class="error">
+        <ul>
+          @for (message of apiErrors(); track $index) {
+            <li>{{ message }}</li>
+          }
+        </ul>
+      </div>
+    }
+
+    <div class="actions">
+      <a mat-button routerLink="/variants">Annuler</a>
+      <button mat-flat-button type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Envoi…' : isEdit ? 'Enregistrer' : 'Créer' }}
+      </button>
+    </div>
+  </form>
+}

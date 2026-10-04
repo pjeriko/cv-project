@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
+import { RouterLink } from '@angular/router';
 import { Variant } from './variant.model';
 import { VariantsService } from './variants.service';
 
@@ -21,14 +22,14 @@ function toMessage(err: unknown): string {
 
 @Component({
   selector: 'app-variants-list',
-  imports: [MatButtonModule, MatProgressBarModule, MatTableModule],
+  imports: [MatButtonModule, MatProgressBarModule, MatTableModule, RouterLink],
   templateUrl: './variants-list.html',
   styleUrl: './variants-list.css',
 })
 export class VariantsList {
   private readonly variantsService = inject(VariantsService);
 
-  protected readonly columns = ['label', 'slug', 'summary'];
+  protected readonly columns = ['label', 'slug', 'summary', 'actions'];
   protected readonly variants = signal<Variant[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);

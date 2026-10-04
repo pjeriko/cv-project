@@ -16,3 +16,7 @@ table {
 .error {
   color: var(--mat-sys-error);
 }
+
+.danger {
+  --mat-button-text-label-text-color: var(--mat-sys-error);
+}

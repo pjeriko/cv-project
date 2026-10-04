@@ -45,6 +45,7 @@ export class Layout {
   protected readonly navItems: NavItem[] = [
     { label: 'Accueil', path: '/', icon: 'home', exact: true },
     { label: 'Compétences', path: '/skills', icon: 'code', exact: false },
+    { label: 'Variantes', path: '/variants', icon: 'tune', exact: false },
   ];
 
   protected readonly isDesktop = toSignal(

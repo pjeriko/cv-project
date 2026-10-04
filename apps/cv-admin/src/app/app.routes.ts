@@ -27,6 +27,10 @@ export const routes: Routes = [
         path: 'skills/:id/edit',
         loadComponent: () => import('./skills/skill-form').then((m) => m.SkillForm),
       },
+      {
+        path: 'variants',
+        loadComponent: () => import('./variants/variants-list').then((m) => m.VariantsList),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

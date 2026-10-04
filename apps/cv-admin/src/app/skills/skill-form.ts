@@ -23,7 +23,7 @@ import {
   VariantOption,
 } from './skill.model';
 import { SkillsService } from './skills.service';
-import { VariantsService } from './variants.service';
+import { VariantsService } from '../variants/variants.service';
 
 // Libellés alignés sur LEVEL_SCORES de cv-public (décision 100).
 // '' = « Aucun » : omis à la création (décision 110), envoyé à null à la modification.

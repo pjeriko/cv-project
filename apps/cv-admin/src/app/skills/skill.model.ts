@@ -18,6 +18,15 @@ export interface CreateSkillPayload {
   variantIds?: number[];
 }
 
+// Corps de PATCH /skills/:id : tous les champs sont envoyés (décision e).
+// level = null vide le niveau ; variantIds REMPLACE les liens.
+export interface UpdateSkillPayload {
+  name: string;
+  category: string;
+  level: string | null;
+  variantIds: number[];
+}
+
 // Variante telle que proposée dans le formulaire (type local, décision 107).
 export interface VariantOption {
   id: number;

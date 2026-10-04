@@ -1,4 +1,4 @@
-<h1>Nouvelle compétence</h1>
+<h1>{{ isEdit ? 'Modifier la compétence' : 'Nouvelle compétence' }}</h1>
 
 @if (loadingOptions()) {
   <mat-progress-bar mode="indeterminate" />
@@ -6,7 +6,10 @@
 
 @if (optionsError(); as message) {
   <p role="alert" class="error">{{ message }}</p>
-  <button mat-stroked-button type="button" (click)="loadOptions()">Réessayer</button>
+  @if (retryable()) {
+    <button mat-stroked-button type="button" (click)="loadOptions()">Réessayer</button>
+  }
+  <a mat-button routerLink="/skills">Retour à la liste</a>
 } @else if (!loadingOptions()) {
   <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
     <mat-form-field appearance="outline">
@@ -39,7 +42,7 @@
       <mat-label>Niveau</mat-label>
       <mat-select formControlName="level">
         <mat-option value="">Aucun</mat-option>
-        @for (level of levels; track level) {
+        @for (level of levels(); track level) {
           <mat-option [value]="level">{{ level }}</mat-option>
         }
       </mat-select>
@@ -67,7 +70,7 @@
     <div class="actions">
       <a mat-button routerLink="/skills">Annuler</a>
       <button mat-flat-button type="submit" [disabled]="submitting()">
-        {{ submitting() ? 'Envoi…' : 'Créer' }}
+        {{ submitting() ? 'Envoi…' : isEdit ? 'Enregistrer' : 'Créer' }}
       </button>
     </div>
   </form>

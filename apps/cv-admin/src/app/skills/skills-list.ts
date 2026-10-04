@@ -31,7 +31,7 @@ function toMessage(err: unknown): string {
 export class SkillsList {
   private readonly skillsService = inject(SkillsService);
 
-  protected readonly columns = ['name', 'category', 'level', 'variants'];
+  protected readonly columns = ['name', 'category', 'level', 'variants', 'actions'];
   protected readonly skills = signal<SkillWithVariants[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);

@@ -1,0 +1,34 @@
+<div class="editor">
+  <div class="header">
+    <span class="label">{{ label() }}</span>
+    <div class="tabs">
+      <button mat-button type="button" [class.active]="!preview()" (click)="show(false)">
+        Écrire
+      </button>
+      <button mat-button type="button" [class.active]="preview()" (click)="show(true)">
+        Aperçu
+      </button>
+    </div>
+  </div>
+
+  @if (preview()) {
+    <div class="preview">
+      @if (isEmpty()) {
+        <p class="empty">Rien à afficher</p>
+      } @else {
+        <div class="markdown" [innerHTML]="html()"></div>
+      }
+    </div>
+  } @else {
+    <textarea
+      class="input"
+      [rows]="rows()"
+      [value]="value()"
+      [disabled]="disabled()"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+    ></textarea>
+  }
+
+  <p class="hint">Markdown accepté</p>
+</div>

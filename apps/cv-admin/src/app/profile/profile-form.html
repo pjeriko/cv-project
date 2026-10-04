@@ -27,11 +27,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Résumé</mat-label>
-      <textarea matInput formControlName="summary" rows="6"></textarea>
-      <mat-hint>Markdown accepté</mat-hint>
-    </mat-form-field>
+    <app-markdown-editor label="Résumé" formControlName="summary" />
 
     <mat-form-field appearance="outline">
       <mat-label>Email</mat-label>

@@ -15,6 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import type { Profile } from '@cv-project/shared-types';
 import { UpdateProfilePayload } from './profile.model';
 import { ProfileService } from './profile.service';
+import { MarkdownEditor } from '../shared/markdown-editor/markdown-editor';
 
 // Reflète @IsUrl({ require_protocol: true, protocols: ['http', 'https'] }) de l'API.
 const URL_PATTERN = /^https?:\/\/\S+$/;
@@ -68,6 +69,7 @@ function toMessages(err: unknown): string[] {
     MatFormFieldModule,
     MatInputModule,
     MatProgressBarModule,
+    MarkdownEditor,
     ReactiveFormsModule,
   ],
   templateUrl: './profile-form.html',

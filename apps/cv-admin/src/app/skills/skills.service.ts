@@ -23,4 +23,8 @@ export class SkillsService {
   update(id: number, payload: UpdateSkillPayload): Observable<SkillWithVariants> {
     return this.http.patch<SkillWithVariants>(`${environment.apiBaseUrl}/skills/${id}`, payload);
   }
+
+  remove(id: number): Observable<void> {
+    return this.http.delete<void>(`${environment.apiBaseUrl}/skills/${id}`);
+  }
 }

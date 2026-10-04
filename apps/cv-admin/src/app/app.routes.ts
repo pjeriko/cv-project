@@ -39,6 +39,10 @@ export const routes: Routes = [
         path: 'variants/:id/edit',
         loadComponent: () => import('./variants/variant-form').then((m) => m.VariantForm),
       },
+      {
+        path: 'profile',
+        loadComponent: () => import('./profile/profile-form').then((m) => m.ProfileForm),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

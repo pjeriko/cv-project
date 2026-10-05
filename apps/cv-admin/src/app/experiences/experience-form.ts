@@ -17,7 +17,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, forkJoin, of } from 'rxjs';
 import { MarkdownEditor } from '../shared/markdown-editor/markdown-editor';
 import { notBlank, orNull, toMessages } from '../shared/forms/form-utils';
-import type { VariantOption } from '../skills/skill.model';
+import type { VariantOption } from '../variants/variant.model';
 import { VariantsService } from '../variants/variants.service';
 import {
   CreateExperiencePayload,

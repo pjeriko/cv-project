@@ -8,29 +8,29 @@ import { RouterLink } from '@angular/router';
 import { ConfirmDialog, ConfirmDialogData } from '../shared/confirm-dialog/confirm-dialog';
 import { formatPeriod } from '../shared/dates/period';
 import { toMessages } from '../shared/forms/form-utils';
-import { ExperienceWithVariants } from './experience.model';
-import { ExperiencesService } from './experiences.service';
+import { EducationWithVariants } from './education.model';
+import { EducationsService } from './educations.service';
 
-const NOT_FOUND = 'Expérience déjà supprimée';
+const NOT_FOUND = 'Formation déjà supprimée';
 
 // Plus récente d'abord ; les chaînes ISO se comparent directement.
-function sortExperiences(experiences: ExperienceWithVariants[]): ExperienceWithVariants[] {
-  return [...experiences].sort((a, b) => b.startDate.localeCompare(a.startDate) || b.id - a.id);
+function sortEducations(educations: EducationWithVariants[]): EducationWithVariants[] {
+  return [...educations].sort((a, b) => b.startDate.localeCompare(a.startDate) || b.id - a.id);
 }
 
 @Component({
-  selector: 'app-experiences-list',
+  selector: 'app-educations-list',
   imports: [MatButtonModule, MatProgressBarModule, MatTableModule, RouterLink],
-  templateUrl: './experiences-list.html',
-  styleUrl: './experiences-list.css',
+  templateUrl: './educations-list.html',
+  styleUrl: './educations-list.css',
 })
-export class ExperiencesList {
-  private readonly experiencesService = inject(ExperiencesService);
+export class EducationsList {
+  private readonly educationsService = inject(EducationsService);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
 
-  protected readonly columns = ['position', 'company', 'period', 'variants', 'actions'];
-  protected readonly experiences = signal<ExperienceWithVariants[]>([]);
+  protected readonly columns = ['degree', 'institution', 'period', 'variants', 'actions'];
+  protected readonly educations = signal<EducationWithVariants[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
   protected readonly deletingId = signal<number | null>(null);
@@ -42,33 +42,33 @@ export class ExperiencesList {
   protected load(): void {
     this.loading.set(true);
     this.error.set(null);
-    this.experiencesService.findAll().subscribe({
-      next: (experiences) => {
-        this.experiences.set(sortExperiences(experiences));
+    this.educationsService.findAll().subscribe({
+      next: (educations) => {
+        this.educations.set(sortEducations(educations));
         this.loading.set(false);
       },
       error: (err: unknown) => {
-        this.error.set(toMessages(err, 'Expériences introuvables')[0]);
+        this.error.set(toMessages(err, 'Formations introuvables')[0]);
         this.loading.set(false);
       },
     });
   }
 
-  protected period(experience: ExperienceWithVariants): string {
-    return formatPeriod(experience.startDate, experience.endDate);
+  protected period(education: EducationWithVariants): string {
+    return formatPeriod(education.startDate, education.endDate);
   }
 
-  protected variantLabels(experience: ExperienceWithVariants): string {
-    return experience.variants.map((link) => link.variant.label).join(', ');
+  protected variantLabels(education: EducationWithVariants): string {
+    return education.variants.map((link) => link.variant.label).join(', ');
   }
 
-  protected confirmRemove(experience: ExperienceWithVariants): void {
+  protected confirmRemove(education: EducationWithVariants): void {
     if (this.deletingId() !== null) {
       return;
     }
     const data: ConfirmDialogData = {
-      title: "Supprimer l'expérience",
-      message: `Supprimer « ${experience.position} » chez « ${experience.company} » ? Ses liens avec les variantes seront supprimés. Cette action est irréversible.`,
+      title: 'Supprimer la formation',
+      message: `Supprimer « ${education.degree} » à « ${education.institution} » ? Ses liens avec les variantes seront supprimés. Cette action est irréversible.`,
       confirmLabel: 'Supprimer',
     };
     this.dialog
@@ -76,17 +76,17 @@ export class ExperiencesList {
       .afterClosed()
       .subscribe((confirmed: boolean | undefined) => {
         if (confirmed === true) {
-          this.remove(experience);
+          this.remove(education);
         }
       });
   }
 
-  private remove(experience: ExperienceWithVariants): void {
-    this.deletingId.set(experience.id);
-    this.experiencesService.remove(experience.id).subscribe({
+  private remove(education: EducationWithVariants): void {
+    this.deletingId.set(education.id);
+    this.educationsService.remove(education.id).subscribe({
       next: () => {
         this.deletingId.set(null);
-        this.snackBar.open('Expérience supprimée', 'OK', { duration: 4000 });
+        this.snackBar.open('Formation supprimée', 'OK', { duration: 4000 });
         this.load();
       },
       error: (err: unknown) => {

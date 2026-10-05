@@ -48,6 +48,7 @@ export class Layout {
     { label: 'Variantes', path: '/variants', icon: 'tune', exact: false },
     { label: 'Profil', path: '/profile', icon: 'person', exact: false },
     { label: 'Expériences', path: '/experiences', icon: 'work', exact: false },
+    { label: 'Formations', path: '/educations', icon: 'school', exact: false },
   ];
 
   protected readonly isDesktop = toSignal(

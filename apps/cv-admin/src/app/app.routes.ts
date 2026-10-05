@@ -41,6 +41,10 @@ export const routes: Routes = [
         loadComponent: () => import('./experiences/experience-form').then((m) => m.ExperienceForm),
       },
       {
+        path: 'educations',
+        loadComponent: () => import('./educations/educations-list').then((m) => m.EducationsList),
+      },
+      {
         path: 'variants',
         loadComponent: () => import('./variants/variants-list').then((m) => m.VariantsList),
       },

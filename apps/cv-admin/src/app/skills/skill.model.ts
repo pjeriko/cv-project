@@ -26,10 +26,3 @@ export interface UpdateSkillPayload {
   level: string | null;
   variantIds: number[];
 }
-
-// Variante telle que proposée dans le formulaire (type local, décision 107).
-export interface VariantOption {
-  id: number;
-  slug: string;
-  label: string;
-}

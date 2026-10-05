@@ -22,3 +22,10 @@ export interface UpdateVariantPayload {
   label: string;
   summary: string | null;
 }
+
+// Variante réduite, telle qu'incluse dans les liens bloc <-> variante.
+export interface VariantOption {
+  id: number;
+  slug: string;
+  label: string;
+}

@@ -1,5 +1,5 @@
 import type { Experience } from '@cv-project/shared-types';
-import type { VariantOption } from '../skills/skill.model';
+import type { VariantOption } from '../variants/variant.model';
 
 export interface ExperienceVariantLink {
   experienceId: number;

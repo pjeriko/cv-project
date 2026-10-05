@@ -1,0 +1,65 @@
+<h1>Formations</h1>
+<p>
+  <a mat-flat-button routerLink="/educations/new">Ajouter</a>
+</p>
+
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (error(); as message) {
+  <p role="alert" class="error">{{ message }}</p>
+  <button mat-stroked-button type="button" (click)="load()">Réessayer</button>
+} @else if (!loading()) {
+  @if (educations().length === 0) {
+    <p>Aucune formation.</p>
+  } @else {
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="educations()">
+        <ng-container matColumnDef="degree">
+          <th mat-header-cell *matHeaderCellDef>Diplôme</th>
+          <td mat-cell *matCellDef="let education">{{ education.degree }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="institution">
+          <th mat-header-cell *matHeaderCellDef>Établissement</th>
+          <td mat-cell *matCellDef="let education">{{ education.institution }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="period">
+          <th mat-header-cell *matHeaderCellDef>Période</th>
+          <td mat-cell *matCellDef="let education">{{ period(education) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="variants">
+          <th mat-header-cell *matHeaderCellDef>Variantes</th>
+          <td mat-cell *matCellDef="let education">{{ variantLabels(education) || '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let education">
+            <a
+              mat-button
+              [routerLink]="['/educations', education.id, 'edit']"
+              [disabled]="deletingId() === education.id"
+              >Modifier</a
+            >
+            <button
+              mat-button
+              type="button"
+              class="danger"
+              [disabled]="deletingId() === education.id"
+              (click)="confirmRemove(education)"
+            >
+              Supprimer
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns"></tr>
+      </table>
+    </div>
+  }
+}

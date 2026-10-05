@@ -11,14 +11,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, forkJoin, of } from 'rxjs';
-import {
-  CreateSkillPayload,
-  SkillWithVariants,
-  UpdateSkillPayload,
-  VariantOption,
-} from './skill.model';
+import { CreateSkillPayload, SkillWithVariants, UpdateSkillPayload } from './skill.model';
 import { SkillsService } from './skills.service';
 import { VariantsService } from '../variants/variants.service';
+import type { VariantOption } from '../variants/variant.model';
 import { notBlank, toMessages } from '../shared/forms/form-utils';
 
 // Libellés alignés sur LEVEL_SCORES de cv-public (décision 100).

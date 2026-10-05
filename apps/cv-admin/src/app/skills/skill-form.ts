@@ -39,7 +39,7 @@ const NOT_FOUND = 'Compétence introuvable';
     RouterLink,
   ],
   templateUrl: './skill-form.html',
-  styleUrl: './skill-form.css',
+  styleUrl: '../shared/forms/form.css',
 })
 export class SkillForm {
   private readonly fb = inject(NonNullableFormBuilder);

@@ -49,7 +49,7 @@ function dateOrder(group: AbstractControl): ValidationErrors | null {
     RouterLink,
   ],
   templateUrl: './experience-form.html',
-  styleUrl: './experience-form.css',
+  styleUrls: ['../shared/forms/form.css', './experience-form.css'],
 })
 export class ExperienceForm {
   private readonly fb = inject(NonNullableFormBuilder);

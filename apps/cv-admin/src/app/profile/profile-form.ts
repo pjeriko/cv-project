@@ -42,7 +42,7 @@ function urlFormat(control: AbstractControl): ValidationErrors | null {
     ReactiveFormsModule,
   ],
   templateUrl: './profile-form.html',
-  styleUrl: './profile-form.css',
+  styleUrl: '../shared/forms/form.css',
 })
 export class ProfileForm {
   private readonly fb = inject(NonNullableFormBuilder);

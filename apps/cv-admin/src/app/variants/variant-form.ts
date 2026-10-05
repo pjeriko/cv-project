@@ -41,7 +41,7 @@ function slugFormat(control: AbstractControl): ValidationErrors | null {
     RouterLink,
   ],
   templateUrl: './variant-form.html',
-  styleUrl: './variant-form.css',
+  styleUrl: '../shared/forms/form.css',
 })
 export class VariantForm {
   private readonly fb = inject(NonNullableFormBuilder);

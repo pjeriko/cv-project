@@ -15,15 +15,11 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CreateVariantPayload, UpdateVariantPayload } from './variant.model';
 import { VariantsService } from './variants.service';
 import { MarkdownEditor } from '../shared/markdown-editor/markdown-editor';
+import { notBlank, toMessages } from '../shared/forms/form-utils';
 
 // Le slug sert d'adresse publique (/cv/slug) : minuscules, chiffres, tirets.
 const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-
-// Une valeur vide ou faite d'espaces est refusée (erreur « required »).
-function notBlank(control: AbstractControl): ValidationErrors | null {
-  const value: string = control.value ?? '';
-  return value.trim() === '' ? { required: true } : null;
-}
+const NOT_FOUND = 'Variante introuvable';
 
 function slugFormat(control: AbstractControl): ValidationErrors | null {
   const value: string = (control.value ?? '').trim();
@@ -31,33 +27,6 @@ function slugFormat(control: AbstractControl): ValidationErrors | null {
     return { required: true };
   }
   return SLUG_PATTERN.test(value) ? null : { slugFormat: true };
-}
-
-function toMessages(err: unknown): string[] {
-  if (err instanceof HttpErrorResponse) {
-    if (err.status === 0) {
-      return ["Impossible de joindre l'API"];
-    }
-    if (err.status === 400) {
-      const message: unknown = err.error?.message;
-      if (Array.isArray(message)) {
-        return message.map((m) => String(m));
-      }
-      if (typeof message === 'string') {
-        return [message];
-      }
-      return ['Requête invalide (code 400)'];
-    }
-    if (err.status === 404) {
-      return ['Variante introuvable'];
-    }
-    if (err.status === 409) {
-      const message: unknown = err.error?.message;
-      return [typeof message === 'string' ? message : 'Conflit (code 409)'];
-    }
-    return [`Erreur inattendue (code ${err.status})`];
-  }
-  return ['Erreur inattendue'];
 }
 
 @Component({
@@ -131,7 +100,7 @@ export class VariantForm {
       error: (err: unknown) => {
         const notFound = err instanceof HttpErrorResponse && err.status === 404;
         this.retryable.set(!notFound);
-        this.loadError.set(toMessages(err)[0]);
+        this.loadError.set(toMessages(err, NOT_FOUND)[0]);
         this.loading.set(false);
       },
     });
@@ -182,7 +151,6 @@ export class VariantForm {
   }
 
   private onError(err: unknown): void {
-    this.apiErrors.set(toMessages(err));
     this.submitting.set(false);
   }
 }

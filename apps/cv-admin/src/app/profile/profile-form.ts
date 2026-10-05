@@ -16,14 +16,11 @@ import type { Profile } from '@cv-project/shared-types';
 import { UpdateProfilePayload } from './profile.model';
 import { ProfileService } from './profile.service';
 import { MarkdownEditor } from '../shared/markdown-editor/markdown-editor';
+import { notBlank, orNull, toMessages } from '../shared/forms/form-utils';
 
 // Reflète @IsUrl({ require_protocol: true, protocols: ['http', 'https'] }) de l'API.
 const URL_PATTERN = /^https?:\/\/\S+$/;
-
-function notBlank(control: AbstractControl): ValidationErrors | null {
-  const value: string = control.value ?? '';
-  return value.trim() === '' ? { required: true } : null;
-}
+const NOT_FOUND = 'Profil introuvable';
 
 // Champ facultatif : vide accepté, sinon http(s):// obligatoire.
 function urlFormat(control: AbstractControl): ValidationErrors | null {
@@ -32,34 +29,6 @@ function urlFormat(control: AbstractControl): ValidationErrors | null {
     return null;
   }
   return URL_PATTERN.test(value) ? null : { urlFormat: true };
-}
-
-function orNull(value: string): string | null {
-  const trimmed = value.trim();
-  return trimmed === '' ? null : trimmed;
-}
-
-function toMessages(err: unknown): string[] {
-  if (err instanceof HttpErrorResponse) {
-    if (err.status === 0) {
-      return ["Impossible de joindre l'API"];
-    }
-    if (err.status === 400) {
-      const message: unknown = err.error?.message;
-      if (Array.isArray(message)) {
-        return message.map((m) => String(m));
-      }
-      if (typeof message === 'string') {
-        return [message];
-      }
-      return ['Requête invalide (code 400)'];
-    }
-    if (err.status === 404) {
-      return ['Profil introuvable'];
-    }
-    return [`Erreur inattendue (code ${err.status})`];
-  }
-  return ['Erreur inattendue'];
 }
 
 @Component({
@@ -115,7 +84,7 @@ export class ProfileForm {
       error: (err: unknown) => {
         const notFound = err instanceof HttpErrorResponse && err.status === 404;
         this.retryable.set(!notFound);
-        this.loadError.set(toMessages(err)[0]);
+        this.loadError.set(toMessages(err, NOT_FOUND)[0]);
         this.loading.set(false);
       },
     });
@@ -169,7 +138,6 @@ export class ProfileForm {
         this.snackBar.open('Profil enregistré', 'OK', { duration: 4000 });
       },
       error: (err: unknown) => {
-        this.apiErrors.set(toMessages(err));
         this.submitting.set(false);
       },
     });

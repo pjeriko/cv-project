@@ -1,12 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  AbstractControl,
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  ValidationErrors,
-} from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -24,39 +19,12 @@ import {
 } from './skill.model';
 import { SkillsService } from './skills.service';
 import { VariantsService } from '../variants/variants.service';
+import { notBlank, toMessages } from '../shared/forms/form-utils';
 
 // Libellés alignés sur LEVEL_SCORES de cv-public (décision 100).
 // '' = « Aucun » : omis à la création (décision 110), envoyé à null à la modification.
 const LEVELS: string[] = ['Intermédiaire', 'Avancé'];
-
-// Une valeur vide ou faite d'espaces est refusée (même erreur « required »).
-function notBlank(control: AbstractControl): ValidationErrors | null {
-  const value: string = control.value ?? '';
-  return value.trim() === '' ? { required: true } : null;
-}
-
-function toMessages(err: unknown): string[] {
-  if (err instanceof HttpErrorResponse) {
-    if (err.status === 0) {
-      return ["Impossible de joindre l'API"];
-    }
-    if (err.status === 400) {
-      const message: unknown = err.error?.message;
-      if (Array.isArray(message)) {
-        return message.map((m) => String(m));
-      }
-      if (typeof message === 'string') {
-        return [message];
-      }
-      return ['Requête invalide (code 400)'];
-    }
-    if (err.status === 404) {
-      return ['Compétence introuvable'];
-    }
-    return [`Erreur inattendue (code ${err.status})`];
-  }
-  return ['Erreur inattendue'];
-}
+const NOT_FOUND = 'Compétence introuvable';
 
 @Component({
   selector: 'app-skill-form',
@@ -161,7 +129,7 @@ export class SkillForm {
       error: (err: unknown) => {
         const notFound = err instanceof HttpErrorResponse && err.status === 404;
         this.retryable.set(!notFound);
-        this.optionsError.set(toMessages(err)[0]);
+        this.optionsError.set(toMessages(err, NOT_FOUND)[0]);
         this.loadingOptions.set(false);
       },
     });
@@ -216,7 +184,7 @@ export class SkillForm {
   }
 
   private onError(err: unknown): void {
-    this.apiErrors.set(toMessages(err));
+    this.apiErrors.set(toMessages(err, NOT_FOUND));
     this.submitting.set(false);
   }
 }

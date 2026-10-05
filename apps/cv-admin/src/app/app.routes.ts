@@ -33,6 +33,14 @@ export const routes: Routes = [
           import('./experiences/experiences-list').then((m) => m.ExperiencesList),
       },
       {
+        path: 'experiences/new',
+        loadComponent: () => import('./experiences/experience-form').then((m) => m.ExperienceForm),
+      },
+      {
+        path: 'experiences/:id/edit',
+        loadComponent: () => import('./experiences/experience-form').then((m) => m.ExperienceForm),
+      },
+      {
         path: 'variants',
         loadComponent: () => import('./variants/variants-list').then((m) => m.VariantsList),
       },

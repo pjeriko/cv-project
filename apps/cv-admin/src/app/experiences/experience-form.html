@@ -1,0 +1,84 @@
+<h1>{{ isEdit ? "Modifier l'expérience" : 'Nouvelle expérience' }}</h1>
+
+@if (loadingOptions()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (optionsError(); as message) {
+  <p role="alert" class="error">{{ message }}</p>
+  @if (retryable()) {
+    <button mat-stroked-button type="button" (click)="loadOptions()">Réessayer</button>
+  }
+  <a mat-button routerLink="/experiences">Retour à la liste</a>
+} @else if (!loadingOptions()) {
+  <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <mat-form-field appearance="outline">
+      <mat-label>Poste</mat-label>
+      <input matInput formControlName="position" autocomplete="off" />
+      @if (form.controls.position.hasError('required')) {
+        <mat-error>Le poste est obligatoire.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Société</mat-label>
+      <input matInput formControlName="company" autocomplete="off" />
+      @if (form.controls.company.hasError('required')) {
+        <mat-error>La société est obligatoire.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date de début</mat-label>
+      <input matInput type="date" formControlName="startDate" />
+      @if (form.controls.startDate.hasError('required')) {
+        <mat-error>La date de début est obligatoire.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date de fin</mat-label>
+      <input matInput type="date" formControlName="endDate" />
+      <mat-hint>Laisser vide pour un poste en cours</mat-hint>
+    </mat-form-field>
+
+    @if (form.hasError('dateOrder') && form.controls.endDate.touched) {
+      <p role="alert" class="field-error">
+        La date de fin doit être postérieure ou égale à la date de début.
+      </p>
+    }
+
+    <div>
+      <app-markdown-editor label="Description" formControlName="description" />
+      @if (form.controls.description.touched && form.controls.description.hasError('required')) {
+        <p role="alert" class="field-error">La description est obligatoire.</p>
+      }
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Variantes</mat-label>
+      <mat-select formControlName="variantIds" multiple>
+        @for (variant of variants(); track variant.id) {
+          <mat-option [value]="variant.id">{{ variant.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if (apiErrors().length > 0) {
+      <div role="alert" class="error">
+        <ul>
+          @for (message of apiErrors(); track $index) {
+            <li>{{ message }}</li>
+          }
+        </ul>
+      </div>
+    }
+
+    <div class="actions">
+      <a mat-button routerLink="/experiences">Annuler</a>
+      <button mat-flat-button type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Envoi…' : isEdit ? 'Enregistrer' : 'Créer' }}
+      </button>
+    </div>
+  </form>
+}

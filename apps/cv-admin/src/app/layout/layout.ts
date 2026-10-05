@@ -47,6 +47,7 @@ export class Layout {
     { label: 'Compétences', path: '/skills', icon: 'code', exact: false },
     { label: 'Variantes', path: '/variants', icon: 'tune', exact: false },
     { label: 'Profil', path: '/profile', icon: 'person', exact: false },
+    { label: 'Expériences', path: '/experiences', icon: 'work', exact: false },
   ];
 
   protected readonly isDesktop = toSignal(

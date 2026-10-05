@@ -1,0 +1,65 @@
+<h1>Expériences</h1>
+<p>
+  <a mat-flat-button routerLink="/experiences/new">Ajouter</a>
+</p>
+
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (error(); as message) {
+  <p role="alert" class="error">{{ message }}</p>
+  <button mat-stroked-button type="button" (click)="load()">Réessayer</button>
+} @else if (!loading()) {
+  @if (experiences().length === 0) {
+    <p>Aucune expérience.</p>
+  } @else {
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="experiences()">
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef>Poste</th>
+          <td mat-cell *matCellDef="let experience">{{ experience.position }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="company">
+          <th mat-header-cell *matHeaderCellDef>Société</th>
+          <td mat-cell *matCellDef="let experience">{{ experience.company }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="period">
+          <th mat-header-cell *matHeaderCellDef>Période</th>
+          <td mat-cell *matCellDef="let experience">{{ period(experience) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="variants">
+          <th mat-header-cell *matHeaderCellDef>Variantes</th>
+          <td mat-cell *matCellDef="let experience">{{ variantLabels(experience) || '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let experience">
+            <a
+              mat-button
+              [routerLink]="['/experiences', experience.id, 'edit']"
+              [disabled]="deletingId() === experience.id"
+              >Modifier</a
+            >
+            <button
+              mat-button
+              type="button"
+              class="danger"
+              [disabled]="deletingId() === experience.id"
+              (click)="confirmRemove(experience)"
+            >
+              Supprimer
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns"></tr>
+      </table>
+    </div>
+  }
+}

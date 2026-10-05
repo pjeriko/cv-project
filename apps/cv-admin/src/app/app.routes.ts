@@ -28,6 +28,11 @@ export const routes: Routes = [
         loadComponent: () => import('./skills/skill-form').then((m) => m.SkillForm),
       },
       {
+        path: 'experiences',
+        loadComponent: () =>
+          import('./experiences/experiences-list').then((m) => m.ExperiencesList),
+      },
+      {
         path: 'variants',
         loadComponent: () => import('./variants/variants-list').then((m) => m.VariantsList),
       },

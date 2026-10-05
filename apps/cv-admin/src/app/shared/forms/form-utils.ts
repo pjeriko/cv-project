@@ -40,3 +40,11 @@ export function toMessages(err: unknown, notFoundMessage: string): string[] {
   }
   return ['Erreur inattendue'];
 }
+
+// Validateur de GROUPE : champs 'startDate' et 'endDate' au format "YYYY-MM-DD"
+// (la comparaison de chaînes suffit). Erreur portée par le groupe, affichée par le template.
+export function dateOrder(group: AbstractControl): ValidationErrors | null {
+  const start: string = group.get('startDate')?.value ?? '';
+  const end: string = group.get('endDate')?.value ?? '';
+  return start !== '' && end !== '' && end < start ? { dateOrder: true } : null;
+}

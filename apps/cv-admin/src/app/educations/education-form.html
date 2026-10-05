@@ -1,0 +1,77 @@
+<h1>{{ isEdit ? 'Modifier la formation' : 'Nouvelle formation' }}</h1>
+
+@if (loadingOptions()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (optionsError(); as message) {
+  <p role="alert" class="error">{{ message }}</p>
+  @if (retryable()) {
+    <button mat-stroked-button type="button" (click)="loadOptions()">Réessayer</button>
+  }
+  <a mat-button routerLink="/educations">Retour à la liste</a>
+} @else if (!loadingOptions()) {
+  <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <mat-form-field appearance="outline">
+      <mat-label>Diplôme</mat-label>
+      <input matInput formControlName="degree" autocomplete="off" />
+      @if (form.controls.degree.hasError('required')) {
+        <mat-error>Le diplôme est obligatoire.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Établissement</mat-label>
+      <input matInput formControlName="institution" autocomplete="off" />
+      @if (form.controls.institution.hasError('required')) {
+        <mat-error>L'établissement est obligatoire.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date de début</mat-label>
+      <input matInput type="date" formControlName="startDate" />
+      @if (form.controls.startDate.hasError('required')) {
+        <mat-error>La date de début est obligatoire.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date de fin</mat-label>
+      <input matInput type="date" formControlName="endDate" />
+      <mat-hint>Laisser vide pour une formation en cours</mat-hint>
+    </mat-form-field>
+
+    @if (form.hasError('dateOrder') && form.controls.endDate.touched) {
+      <p role="alert" class="field-error">
+        La date de fin doit être postérieure ou égale à la date de début.
+      </p>
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Variantes</mat-label>
+      <mat-select formControlName="variantIds" multiple>
+        @for (variant of variants(); track variant.id) {
+          <mat-option [value]="variant.id">{{ variant.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if (apiErrors().length > 0) {
+      <div role="alert" class="error">
+        <ul>
+          @for (message of apiErrors(); track $index) {
+            <li>{{ message }}</li>
+          }
+        </ul>
+      </div>
+    }
+
+    <div class="actions">
+      <a mat-button routerLink="/educations">Annuler</a>
+      <button mat-flat-button type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Envoi…' : isEdit ? 'Enregistrer' : 'Créer' }}
+      </button>
+    </div>
+  </form>
+}

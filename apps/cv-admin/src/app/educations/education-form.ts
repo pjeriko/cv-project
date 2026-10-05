@@ -9,23 +9,21 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, forkJoin, of } from 'rxjs';
-import { MarkdownEditor } from '../shared/markdown-editor/markdown-editor';
 import { dateOrder, notBlank, orNull, toMessages } from '../shared/forms/form-utils';
 import type { VariantOption } from '../variants/variant.model';
 import { VariantsService } from '../variants/variants.service';
 import {
-  CreateExperiencePayload,
-  ExperienceWithVariants,
-  UpdateExperiencePayload,
-} from './experience.model';
-import { ExperiencesService } from './experiences.service';
+  CreateEducationPayload,
+  EducationWithVariants,
+  UpdateEducationPayload,
+} from './education.model';
+import { EducationsService } from './educations.service';
 
-const NOT_FOUND = 'Expérience introuvable';
+const NOT_FOUND = 'Formation introuvable';
 
 @Component({
-  selector: 'app-experience-form',
+  selector: 'app-education-form',
   imports: [
-    MarkdownEditor,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
@@ -34,12 +32,12 @@ const NOT_FOUND = 'Expérience introuvable';
     ReactiveFormsModule,
     RouterLink,
   ],
-  templateUrl: './experience-form.html',
+  templateUrl: './education-form.html',
   styleUrl: '../shared/forms/form.css',
 })
-export class ExperienceForm {
+export class EducationForm {
   private readonly fb = inject(NonNullableFormBuilder);
-  private readonly experiencesService = inject(ExperiencesService);
+  private readonly educationsService = inject(EducationsService);
   private readonly variantsService = inject(VariantsService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
@@ -47,17 +45,16 @@ export class ExperienceForm {
 
   // Mode : paramètre :id présent = modification.
   private readonly rawId: string | null = this.route.snapshot.paramMap.get('id');
-  private readonly experienceId: number | null =
+  private readonly educationId: number | null =
     this.rawId !== null && /^\d+$/.test(this.rawId) ? Number(this.rawId) : null;
   protected readonly isEdit: boolean = this.rawId !== null;
 
   protected readonly form = this.fb.group(
     {
-      position: this.fb.control('', notBlank),
-      company: this.fb.control('', notBlank),
+      degree: this.fb.control('', notBlank),
+      institution: this.fb.control('', notBlank),
       startDate: this.fb.control('', Validators.required),
       endDate: this.fb.control(''),
-      description: this.fb.control('', notBlank),
       variantIds: this.fb.control<number[]>([]),
     },
     { validators: dateOrder },
@@ -78,7 +75,7 @@ export class ExperienceForm {
     this.optionsError.set(null);
     this.retryable.set(true);
 
-    if (this.isEdit && this.experienceId === null) {
+    if (this.isEdit && this.educationId === null) {
       this.optionsError.set('Identifiant invalide');
       this.retryable.set(false);
       this.loadingOptions.set(false);
@@ -86,25 +83,24 @@ export class ExperienceForm {
     }
 
     this.loadingOptions.set(true);
-    const experience$: Observable<ExperienceWithVariants | null> =
-      this.experienceId === null ? of(null) : this.experiencesService.findOne(this.experienceId);
+    const education$: Observable<EducationWithVariants | null> =
+      this.educationId === null ? of(null) : this.educationsService.findOne(this.educationId);
 
     forkJoin({
       variants: this.variantsService.findAll(),
-      experience: experience$,
+      education: education$,
     }).subscribe({
-      next: ({ variants, experience }) => {
+      next: ({ variants, education }) => {
         this.variants.set([...variants].sort((a, b) => a.label.localeCompare(b.label, 'fr')));
 
-        if (experience !== null) {
+        if (education !== null) {
           this.form.patchValue({
-            position: experience.position,
-            company: experience.company,
+            degree: education.degree,
+            institution: education.institution,
             // "2022-09-01T00:00:00.000Z" -> "2022-09-01"
-            startDate: experience.startDate.slice(0, 10),
-            endDate: experience.endDate === null ? '' : experience.endDate.slice(0, 10),
-            description: experience.description,
-            variantIds: experience.variants.map((link) => link.variantId),
+            startDate: education.startDate.slice(0, 10),
+            endDate: education.endDate === null ? '' : education.endDate.slice(0, 10),
+            variantIds: education.variants.map((link) => link.variantId),
           });
         }
         this.loadingOptions.set(false);
@@ -131,27 +127,25 @@ export class ExperienceForm {
     this.submitting.set(true);
     this.apiErrors.set([]);
 
-    if (this.experienceId !== null) {
-      const payload: UpdateExperiencePayload = {
-        position: value.position.trim(),
-        company: value.company.trim(),
+    if (this.educationId !== null) {
+      const payload: UpdateEducationPayload = {
+        degree: value.degree.trim(),
+        institution: value.institution.trim(),
         startDate: value.startDate,
         endDate: orNull(value.endDate),
-        description: value.description.trim(),
         variantIds: value.variantIds,
       };
-      this.experiencesService.update(this.experienceId, payload).subscribe({
-        next: () => this.onSuccess('Expérience modifiée'),
+      this.educationsService.update(this.educationId, payload).subscribe({
+        next: () => this.onSuccess('Formation modifiée'),
         error: (err: unknown) => this.onError(err),
       });
       return;
     }
 
-    const payload: CreateExperiencePayload = {
-      position: value.position.trim(),
-      company: value.company.trim(),
+    const payload: CreateEducationPayload = {
+      degree: value.degree.trim(),
+      institution: value.institution.trim(),
       startDate: value.startDate,
-      description: value.description.trim(),
     };
     if (value.endDate !== '') {
       payload.endDate = value.endDate;
@@ -159,15 +153,15 @@ export class ExperienceForm {
     if (value.variantIds.length > 0) {
       payload.variantIds = value.variantIds;
     }
-    this.experiencesService.create(payload).subscribe({
-      next: () => this.onSuccess('Expérience créée'),
+    this.educationsService.create(payload).subscribe({
+      next: () => this.onSuccess('Formation créée'),
       error: (err: unknown) => this.onError(err),
     });
   }
 
   private onSuccess(message: string): void {
     this.snackBar.open(message, 'OK', { duration: 4000 });
-    void this.router.navigateByUrl('/experiences');
+    void this.router.navigateByUrl('/educations');
   }
 
   private onError(err: unknown): void {

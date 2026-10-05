@@ -45,6 +45,14 @@ export const routes: Routes = [
         loadComponent: () => import('./educations/educations-list').then((m) => m.EducationsList),
       },
       {
+        path: 'educations/new',
+        loadComponent: () => import('./educations/education-form').then((m) => m.EducationForm),
+      },
+      {
+        path: 'educations/:id/edit',
+        loadComponent: () => import('./educations/education-form').then((m) => m.EducationForm),
+      },
+      {
         path: 'variants',
         loadComponent: () => import('./variants/variants-list').then((m) => m.VariantsList),
       },

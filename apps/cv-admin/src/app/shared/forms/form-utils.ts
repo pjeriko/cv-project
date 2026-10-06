@@ -48,3 +48,15 @@ export function dateOrder(group: AbstractControl): ValidationErrors | null {
   const end: string = group.get('endDate')?.value ?? '';
   return start !== '' && end !== '' && end < start ? { dateOrder: true } : null;
 }
+
+// Reflète @IsUrl({ require_protocol: true, protocols: ['http', 'https'] }) de l'API.
+const URL_PATTERN = /^https?:\/\/\S+$/;
+
+// Champ facultatif : vide accepté, sinon http(s):// obligatoire.
+export function urlFormat(control: AbstractControl): ValidationErrors | null {
+  const value: string = (control.value ?? '').trim();
+  if (value === '') {
+    return null;
+  }
+  return URL_PATTERN.test(value) ? null : { urlFormat: true };
+}

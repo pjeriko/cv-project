@@ -1,12 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
-import {
-  AbstractControl,
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -16,20 +10,11 @@ import type { Profile } from '@cv-project/shared-types';
 import { UpdateProfilePayload } from './profile.model';
 import { ProfileService } from './profile.service';
 import { MarkdownEditor } from '../shared/markdown-editor/markdown-editor';
-import { notBlank, orNull, toMessages } from '../shared/forms/form-utils';
+import { notBlank, orNull, toMessages, urlFormat } from '../shared/forms/form-utils';
 
 // Reflète @IsUrl({ require_protocol: true, protocols: ['http', 'https'] }) de l'API.
 const URL_PATTERN = /^https?:\/\/\S+$/;
 const NOT_FOUND = 'Profil introuvable';
-
-// Champ facultatif : vide accepté, sinon http(s):// obligatoire.
-function urlFormat(control: AbstractControl): ValidationErrors | null {
-  const value: string = (control.value ?? '').trim();
-  if (value === '') {
-    return null;
-  }
-  return URL_PATTERN.test(value) ? null : { urlFormat: true };
-}
 
 @Component({
   selector: 'app-profile-form',
@@ -138,6 +123,7 @@ export class ProfileForm {
         this.snackBar.open('Profil enregistré', 'OK', { duration: 4000 });
       },
       error: (err: unknown) => {
+        this.apiErrors.set(toMessages(err, NOT_FOUND));
         this.submitting.set(false);
       },
     });

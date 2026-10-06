@@ -1,0 +1,14 @@
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.error {
+  color: var(--mat-sys-error);
+}
+.danger {
+  --mat-button-text-label-text-color: var(--mat-sys-error);
+}

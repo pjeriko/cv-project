@@ -1,0 +1,73 @@
+<h1>Projets</h1>
+<p>
+  <a mat-flat-button routerLink="/projects/new">Ajouter</a>
+</p>
+
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (error(); as message) {
+  <p role="alert" class="error">{{ message }}</p>
+  <button mat-stroked-button type="button" (click)="load()">Réessayer</button>
+} @else if (!loading()) {
+  @if (projects().length === 0) {
+    <p>Aucun projet.</p>
+  } @else {
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="projects()">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Nom</th>
+          <td mat-cell *matCellDef="let project">{{ project.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="url">
+          <th mat-header-cell *matHeaderCellDef>URL</th>
+          <td mat-cell *matCellDef="let project">
+            @if (project.url) {
+              <a [href]="project.url" target="_blank" rel="noopener noreferrer">{{
+                project.url
+              }}</a>
+            } @else {
+              —
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef>Position</th>
+          <td mat-cell *matCellDef="let project">{{ project.position }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="variants">
+          <th mat-header-cell *matHeaderCellDef>Variantes</th>
+          <td mat-cell *matCellDef="let project">{{ variantLabels(project) || '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let project">
+            <a
+              mat-button
+              [routerLink]="['/projects', project.id, 'edit']"
+              [disabled]="deletingId() === project.id"
+              >Modifier</a
+            >
+            <button
+              mat-button
+              type="button"
+              class="danger"
+              [disabled]="deletingId() === project.id"
+              (click)="confirmRemove(project)"
+            >
+              Supprimer
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns"></tr>
+      </table>
+    </div>
+  }
+}

@@ -11,6 +11,7 @@ interface SkillGroup {
 // Un libellé absent de cette table est affiché tel quel, sans « + ».
 // Clés en minuscules : la comparaison ignore la casse et les espaces autour.
 const LEVEL_SCORES: Record<string, number> = {
+  débutant: 1,
   intermédiaire: 2,
   avancé: 3,
 };

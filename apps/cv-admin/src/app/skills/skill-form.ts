@@ -19,7 +19,7 @@ import { notBlank, toMessages } from '../shared/forms/form-utils';
 
 // Libellés alignés sur LEVEL_SCORES de cv-public (décision 100).
 // '' = « Aucun » : omis à la création (décision 110), envoyé à null à la modification.
-const LEVELS: string[] = ['Intermédiaire', 'Avancé'];
+const LEVELS: string[] = ['Débutant', 'Intermédiaire', 'Avancé'];
 const NOT_FOUND = 'Compétence introuvable';
 
 @Component({
